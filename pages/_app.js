@@ -6,6 +6,7 @@ import rootReducer from "../redux/reducers/rootReducer";
 import rootSaga from "../redux/sagas/rootSaga";
 import { useSelector } from "react-redux";
 import { useEffect } from "react";
+import { getProducts } from "../redux/reducers/productsSlice";
 
 const sagaMiddleware = createSagaMiddleware();
 
@@ -27,7 +28,7 @@ function MyApp({ Component, pageProps }) {
 const Content = ({ Component, pageProps }) => {
 	const dispatch = useDispatch();
 	useEffect(() => {
-		dispatch({ type: "GET_PRODUCTS" });
+		dispatch(getProducts());
 	}, []);
 
 	const state = useSelector((state) => state);

@@ -1,21 +1,28 @@
 import { createSlice } from "@reduxjs/toolkit";
-import toast, { Toaster } from "react-hot-toast";
-const notify = () => toast("Here is your toast.");
+import toast from "react-hot-toast";
 const productsSlice = createSlice({
 	name: "products",
 	initialState: {
 		list: [],
-		status: null,
+		status: false,
 	},
 	reducers: {
-		handleGetProductsRequest(state, action) {
-			console.log(action?.type, "action");
-	if (action?.type) {
-				notify();
+		getProducts: (state) => {
+			state.status = true;
+		},
+		getProductsFailed: (state) => {
+			state.status = false;
+		},
+		getProductsSuccess: (state, action) => {
+			console.log(action?.payload?.status, "action");
+			if (action?.payload?.status === 200) {
+				alert("hi");
+				toast("done");
 			}
 			return { ...state, list: action.payload };
 		},
 	},
 });
-export const { handleGetProductsRequest } = productsSlice.actions;
+export const { getProducts, getProductsFailed, getProductsSuccess } =
+	productsSlice.actions;
 export default productsSlice.reducer;

@@ -1,22 +1,27 @@
-import { call, put, takeLatest, all } from "redux-saga/effects";
-import { handleGetProductsRequest } from "../reducers/productsSlice";
+import { call, put, takeLatest, all, putResolve } from "redux-saga/effects";
+import { getProductsSuccess } from "../reducers/productsSlice";
 import axios from "axios";
-import { GET_PRODUCTS } from "../types";
 
 //getuserapi
-function getProductsApi(action) {
-	return axios.get("https://jsonplaceholder.typicode.com/posts");
+function getProductsApi() {
+	return new Promise((resolve, reject) => {
+		axios
+			.get("https://jsonplaceholder.typicode.com/posts")
+			.then((resp) => resolve(resp))
+			.catch((err) => reject(err));
+	});
 }
-function* getProducts(action) {
+
+function* getProducts() {
 	try {
-		const resp = yield call(getProductsApi, action);
-		yield put(handleGetProductsRequest(resp.data));
-	} catch (resp) {
-		yield put(handleGetProductsRequest(resp.data));
+		const resp = yield call(getProductsApi);
+		yield putResolve(getProductsSuccess(resp));
+	} catch (err) {
+		yield putResolve(getProductsSuccess(err));
 	}
 }
 
 function* products() {
-	yield all([takeLatest(GET_PRODUCTS, getProducts)]);
+	yield all([takeLatest("products/getProducts", getProducts)]);
 }
 export default products;
