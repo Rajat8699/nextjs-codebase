@@ -14,12 +14,8 @@ const productsSlice = createSlice({
 			state.status = false;
 		},
 		getProductsSuccess: (state, action) => {
-			console.log(action?.payload?.status, "action");
-			if (action?.payload?.status === 200) {
-				alert("hi");
-				toast("done");
-			}
-			return { ...state, list: action.payload };
+			state.status = false;
+			state.list = action.payload;
 		},
 	},
 });
