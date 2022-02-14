@@ -12,10 +12,12 @@ const productsSlice = createSlice({
 		},
 		getProductsFailed: (state) => {
 			state.status = false;
+			toast.error("Failed to get products");
 		},
 		getProductsSuccess: (state, action) => {
 			state.status = false;
 			state.list = action.payload;
+			toast.success("Products loaded successfully");
 		},
 	},
 });

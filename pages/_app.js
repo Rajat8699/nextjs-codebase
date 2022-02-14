@@ -1,31 +1,11 @@
 import "../styles/globals.css";
-import { Provider, useDispatch } from "react-redux";
-import { configureStore } from "@reduxjs/toolkit";
-import createSagaMiddleware from "@redux-saga/core";
-import rootReducer from "../redux/reducers/rootReducer";
-import rootSaga from "../redux/sagas/rootSaga";
+import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { useEffect } from "react";
 import { getProducts } from "../redux/reducers/productsSlice";
-
-const sagaMiddleware = createSagaMiddleware();
-
-function MyApp({ Component, pageProps }) {
-	const store = configureStore({
-		reducer: rootReducer,
-		middleware: [sagaMiddleware],
-	});
-
-	sagaMiddleware.run(rootSaga);
-
-	return (
-		<Provider store={store}>
-			<Content Component={Component} pageProps={pageProps} />
-		</Provider>
-	);
-}
-
-const Content = ({ Component, pageProps }) => {
+import store from "../redux/store";
+import { Toaster } from "react-hot-toast";
+function App({ Component, pageProps }) {
 	const dispatch = useDispatch();
 	useEffect(() => {
 		dispatch(getProducts());
@@ -33,7 +13,24 @@ const Content = ({ Component, pageProps }) => {
 
 	const state = useSelector((state) => state);
 	console.log(state, "state");
-	return <Component {...pageProps} />;
+
+	return (
+		<>
+			<Toaster />
+			<Component {...pageProps} />
+		</>
+	);
+}
+
+App.getInitialProps = async ({ Component, ctx }) => {
+	const pageProps =
+		Component && Component.getInitialProps
+			? await Component.getInitialProps(ctx)
+			: {};
+	return {
+		pageProps,
+		namespacesRequired: ["common"],
+	};
 };
 
-export default MyApp;
+export default store.withRedux(App);
